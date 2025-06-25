@@ -1,20 +1,23 @@
-import { Player } from "./players"
+import { Player } from './players.js'
 
 const gameRules = (function(){
-    occupiedPositions = []
+    let occupiedPositions = []
 
     function legalPosition(playerChoice) {
         if (playerChoice > 9 || playerChoice < 0) {
             alert("You can only choose a position that exists on the board!")
+            return 0
         }
+        else {return 1}
     }
 
     function checkOccupied(playerChoice) {
-        occupiedPositions.forEach(position => {
-            if (playerChoice == position) {
-                alert("Can't place there!")
+        for(let position of occupiedPositions) {
+            if(position == playerChoice){
+                return 0
             }
-        });
+        }
+        return 1
     }
 
     function pickPosition(playerName) {
@@ -23,24 +26,12 @@ const gameRules = (function(){
 
     function markPosition (board,currentPlayer,chosenPosition) {
         // add the position to the players's array choice
-        currentPlayer.choices.push(chosenPosition)
+        currentPlayer.choice.push(chosenPosition)
+        occupiedPositions.push(chosenPosition)
 
         // mark the board with the choice
         const playerMark = currentPlayer.mark
         board[chosenPosition] = playerMark
-    }
-
-    function tie() {
-        if (occupiedPositions.length >= 9) {
-            alert("TIE")
-        }
-    }
-
-    function changePlayer() {
-        if (currentPlayer == player1)
-            currentPlayer = player2
-        else
-            currentPlayer = player1   
     }
 
     function createPlayers() {
@@ -50,16 +41,77 @@ const gameRules = (function(){
         return new Player(name, mark)
     }
 
+    function combos() {
+        return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    }
+
+    function checkWin(player) {
+        const allCombos = combos()
+        // for optimal reasons we check for a win only if we've already got 3 picks in
+        // so basically the minimum picks for a win 
+        // we dont have to check for the first 2 on both of the players
+        if(player.choice.length >= 3) {
+            
+            for(let eachCombo in allCombos) {
+                if(player.choice == allCombos[eachCombo]) {
+                    console.log(`${player.name} you are the winner`)
+                }
+            }
+        }
+    }
+
+    function playGame() {
+        // define players
+        let player1 = createPlayers()
+        let player2 = createPlayers()
+
+        let currentPlayer = player1
+
+        for (let i = 0; i < 9; i++) {
+            const choice = Number(pickPosition(currentPlayer))
+
+            const isLegal = legalPosition(choice)
+            const isOccupied = checkOccupied(choice)
+            
+            // go ahead if the position is legal and empty
+            if(isLegal == 1 && isOccupied == 1) {
+                markPosition(occupiedPositions, currentPlayer, choice)
+            }
+
+            if(isLegal == 0 || isOccupied == 0) {            
+                // pick again if the position is not legal nor empty
+                console.log("please pick again")
+            }
+
+            // check for tie
+            if(occupiedPositions.length >= 9) {
+                console.log("tie")
+            }
+            // checking for winner
+            checkWin(currentPlayer)
+
+            // since js doesnt change the object in the function it just makes a local copy i have to change the object here locally
+
+            currentPlayer = currentPlayer === player1 ? player2:player1
+
+        }
+
+        console.log(player1.choice)
+        console.log(player2.choice)
+        console.log(occupiedPositions)
+    }
+
     return {
         legalPosition,
         checkOccupied,
         pickPosition,
         markPosition,
-        tie,
-        changePlayer,
-        createPlayers
+        createPlayers,
+        playGame
     }
 
 })()
 
 const newGame = gameRules
+
+newGame.playGame()
