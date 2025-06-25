@@ -1,3 +1,5 @@
+import { Player } from "./players"
+
 const gameRules = (function(){
     occupiedPositions = []
 
@@ -34,16 +36,30 @@ const gameRules = (function(){
         }
     }
 
+    function changePlayer() {
+        if (currentPlayer == player1)
+            currentPlayer = player2
+        else
+            currentPlayer = player1   
+    }
+
+    function createPlayers() {
+        const name = prompt("your name please:")
+        const mark = prompt("your mark:")
+
+        return new Player(name, mark)
+    }
+
     return {
         legalPosition,
         checkOccupied,
         pickPosition,
         markPosition,
-        tie
+        tie,
+        changePlayer,
+        createPlayers
     }
 
 })()
 
 const newGame = gameRules
-
-newGame.pickPosition("ben")
