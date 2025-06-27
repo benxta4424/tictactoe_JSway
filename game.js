@@ -125,4 +125,22 @@ const gameRules = (function(){
 
 })()
 
-const newGame = gameRules
+// const newGame = gameRules
+
+
+// create the buttons dynamically
+
+function generateButtons() {
+    const getBoard = document.getElementById("playingBoard")
+    
+    for(let i = 0; i < 9; i++) {
+        const createButton = document.createElement("button")
+        createButton.className = "dynamicButton"
+        createButton.innerText = ""
+        createButton.dataset.index = i
+
+        getBoard.appendChild(createButton)
+    }
+}
+
+generateButtons()
