@@ -130,17 +130,37 @@ const gameRules = (function(){
 
 // create the buttons dynamically
 
-function generateButtons() {
+const addVisual = (function generateButtons() {
     const getBoard = document.getElementById("playingBoard")
-    
-    for(let i = 0; i < 9; i++) {
-        const createButton = document.createElement("button")
-        createButton.className = "dynamicButton"
-        createButton.innerText = ""
-        createButton.dataset.index = i
 
-        getBoard.appendChild(createButton)
+    function generateButtons() {
+        
+        for(let i = 0; i < 9; i++) {
+            const createButton = document.createElement("button")
+            createButton.className = "dynamicButton"
+            createButton.innerText = ""
+            createButton.dataset.index = i
+
+            getBoard.appendChild(createButton)
+        }
     }
-}
 
-generateButtons()
+    function addListners(event) {
+        getBoard.addEventListener("click" , (event) => {
+            const clicked = event.target
+            clicked.innerText = "X"
+            clicked.disabled = true
+        })
+    }
+
+    return {
+        generateButtons,
+        addListners
+    }
+})()
+
+const jocVizual = addVisual
+
+jocVizual.generateButtons()
+jocVizual.addListners()
+// clicking event listner
