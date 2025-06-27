@@ -1,0 +1,91 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+img, picture, video, canvas, svg {
+  display: block;
+  max-width: 100%;
+}
+input, button, textarea, select {
+  font: inherit;
+}
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+#root, #__next {
+  isolation: isolate;
+}
+
+
+/* after reset */
+.pageContainer {
+    display: flex;
+    box-shadow: 1px 1px 20px brown;
+    margin-top: 20px;
+    border-radius: 20px;
+
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    height: 850px;
+}
+#nameForm {
+    display: flex;
+    flex: 1;
+    height: 13%;
+    justify-content: space-between;
+    padding: 30px;
+}
+.playersInputs {
+    font-size: 10px;
+    font-weight: 900;
+    text-align: center;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+.formButton {
+    text-align: center;
+    width: 70px;
+    height: 30px;
+    font: 5px;
+    border-radius: 20px;
+    border: 0px;
+    background-color: white;
+    box-shadow: 1px 1px 10px grey;
+
+    margin-left: auto;
+    margin-right: auto;
+    
+    transform: translateY(-5px) scale(1);
+    transition-duration: 0.7s;
+
+}
+.formButton:hover {
+    background-color: lightblue;
+    color: darkblue;
+    transform: translateY(5px) scale(2);
+    transition-duration: 1s;
+}

@@ -126,5 +126,3 @@ const gameRules = (function(){
 })()
 
 const newGame = gameRules
-
-newGame.playGame()
