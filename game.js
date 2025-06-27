@@ -21,13 +21,13 @@ const gameRules = (function(){
     }
 
     function pickPosition(playerName) {
-        return prompt(`${playerName.name} please pick a spot you would like:`)
+        return Number(prompt(`${playerName.name} please pick a spot you would like:`))
     }
 
     function markPosition (board,currentPlayer,chosenPosition) {
         // add the position to the players's array choice
-        currentPlayer.choice.push(chosenPosition)
-        occupiedPositions.push(chosenPosition)
+        currentPlayer.choice.push(Number(chosenPosition))
+        occupiedPositions.push(Number(chosenPosition))
 
         // mark the board with the choice
         const playerMark = currentPlayer.mark
@@ -47,17 +47,25 @@ const gameRules = (function(){
 
     function checkWin(player) {
         const allCombos = combos()
+        const playerChoice = player.choice
         // for optimal reasons we check for a win only if we've already got 3 picks in
         // so basically the minimum picks for a win 
         // we dont have to check for the first 2 on both of the players
-        if(player.choice.length >= 3) {
+        if(playerChoice.length >= 3) {
             
-            for(let eachCombo in allCombos) {
-                if(player.choice == allCombos[eachCombo]) {
-                    console.log(`${player.name} you are the winner`)
+            for(let eachCombo of allCombos) {
+                if(eachCombo.every(position => playerChoice.includes(position) )) {
+                    return eachCombo
                 }
             }
+            return 0
         }
+    }
+
+    function announceWinner(currentPlayer, winningCombo) {
+        alert(`${currentPlayer.name} has won by combo ${winningCombo}`)
+        return 1
+
     }
 
     function playGame() {
@@ -88,8 +96,13 @@ const gameRules = (function(){
                 console.log("tie")
             }
             // checking for winner
-            checkWin(currentPlayer)
-
+            const winVariable = checkWin(currentPlayer)
+            if (winVariable) {
+                announceWinner(currentPlayer,winVariable)
+            }
+            
+            
+            
             // since js doesnt change the object in the function it just makes a local copy i have to change the object here locally
 
             currentPlayer = currentPlayer === player1 ? player2:player1
