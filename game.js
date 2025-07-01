@@ -26,13 +26,11 @@ const gameRules = (function () {
 
     function announceWinner(currentPlayer, winningCombo) {
         document.getElementById("displayWinner").innerText = `${currentPlayer.name} has won by combo ${winningCombo}`
-        return 1
     }
 
     function checkAndAnnounceTie(allPositions) {
         if(allPositions.length >= 9) {
             document.getElementById("displayWinner").innerText = `Its a tie!`
-            return 1
         }
     }
 
@@ -79,6 +77,7 @@ const gameRules = (function () {
 
             if(winVariable) {
                 announceWinner(currentPlayer, winVariable)
+                resetGame(getBoard, getPlayerInput, occupiedPositions, playerOne, playerTwo)
             }
 
 
@@ -87,11 +86,33 @@ const gameRules = (function () {
 
     }
 
+    function resetGame(board, form, occupiedPositions, playerOne, playerTwo) {
+        const appendButton = document.getElementById("bottomDetails") 
+        const clearWinningText = document.getElementById("displayWinner")
+
+        const resetButton = document.createElement("button")
+        resetButton.className = "resetButton"
+        resetButton.innerText = "reset"
+
+        resetButton.addEventListener("click", ()=> {
+            playerOne.choice = []
+            playerTwo.choice = []
+            occupiedPositions = []
+            clearWinningText.innerText = ""
+
+            board.remove()
+            form.reset()          
+        })
+
+        appendButton.appendChild(resetButton)
+    }
+
     return {
         announceWinner,
         checkAndAnnounceTie,
         playActualGame,
-        getPlayersAndStartGame
+        getPlayersAndStartGame,
+        resetGame
     }
 
 }) ()
@@ -123,10 +144,9 @@ const addVisual = (function generateButtons() {
             const getFirstName = document.getElementById("firstPlayer").value
             const getLastName = document.getElementById("secondPlayer").value
 
-            getForm.reset()
-
             return [getFirstName, getLastName]
         })
+        
 
     }
 
