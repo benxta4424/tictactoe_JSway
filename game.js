@@ -26,17 +26,21 @@ const gameRules = (function () {
 
     function announceWinner(currentPlayer, winningCombo) {
         document.getElementById("displayWinner").innerText = `${currentPlayer.name} has won by combo ${winningCombo}`
+        setTimeout(resetGame,1000)
+
     }
 
     function checkAndAnnounceTie(allPositions) {
-        if(allPositions.length >= 9) {
+        if (allPositions.length >= 9) {
             document.getElementById("displayWinner").innerText = `Its a tie!`
+            setTimeout(resetGame,1000)
+
         }
     }
 
     function getPlayersAndStartGame() {
         const getForm = document.getElementById("nameForm")
-        
+
         getForm.addEventListener("submit", (event) => {
             event.preventDefault()
 
@@ -45,22 +49,26 @@ const gameRules = (function () {
 
             playerOne = new Player(playerOne, "X")
             playerTwo = new Player(playerTwo, "O")
-            
+
             playActualGame(playerOne, playerTwo)
         })
     }
 
     function playActualGame(playerOne, playerTwo) {
+        // target the board and the form
+        const getBoard = document.getElementById("playingBoard")
+        const getForm = document.getElementById("nameForm")
+
         // get frontend
         const getFront = addVisual
         getFront.generateButtons()
 
         let currentPlayer = playerOne
+        
+        const newBoard = getBoard.cloneNode(true)
+        getBoard.parentNode.replaceChild(newBoard, getBoard)
 
-        // target the board
-        const getBoard = document.getElementById("playingBoard")
-
-        getBoard.addEventListener("click", (event) => {
+        newBoard.addEventListener("click", (event) => {
             const clicked = event.target
             clicked.innerText = currentPlayer.mark
             clicked.disabled = true
@@ -72,50 +80,32 @@ const gameRules = (function () {
 
             // cwe theb check the combos
             const winVariable = checkWin(currentPlayer)
-            
+
             checkAndAnnounceTie(currentPlayer)
 
-            if(winVariable) {
+            if (winVariable) {
                 announceWinner(currentPlayer, winVariable)
-                resetGame(getBoard, getPlayerInput, occupiedPositions, playerOne, playerTwo)
             }
 
+            checkAndAnnounceTie(occupiedPositions)
 
             currentPlayer = currentPlayer === playerOne ? playerTwo : playerOne
         })
 
     }
 
-    function resetGame(board, form, occupiedPositions, playerOne, playerTwo) {
-        const appendButton = document.getElementById("bottomDetails") 
-        const clearWinningText = document.getElementById("displayWinner")
-
-        const resetButton = document.createElement("button")
-        resetButton.className = "resetButton"
-        resetButton.innerText = "reset"
-
-        resetButton.addEventListener("click", ()=> {
-            playerOne.choice = []
-            playerTwo.choice = []
-            occupiedPositions = []
-            clearWinningText.innerText = ""
-
-            board.remove()
-            form.reset()          
-        })
-
-        appendButton.appendChild(resetButton)
-    }
+    function resetGame() {
+            const getForm = document.getElementById("nameForm")
+            getForm.reset()
+            
+            window.location.reload()
+        }
 
     return {
-        announceWinner,
-        checkAndAnnounceTie,
-        playActualGame,
-        getPlayersAndStartGame,
-        resetGame
+        getPlayersAndStartGame
     }
 
-}) ()
+})()
 
 // create the buttons dynamically
 
@@ -123,15 +113,14 @@ const addVisual = (function generateButtons() {
     const getBoard = document.getElementById("playingBoard")
 
     function generateButtons() {
+            for (let i = 0; i < 9; i++) {
+                const createButton = document.createElement("button")
+                createButton.className = "dynamicButton"
+                createButton.innerText = ""
+                createButton.dataset.index = i
 
-        for (let i = 0; i < 9; i++) {
-            const createButton = document.createElement("button")
-            createButton.className = "dynamicButton"
-            createButton.innerText = ""
-            createButton.dataset.index = i
-
-            getBoard.appendChild(createButton)
-        }
+                getBoard.appendChild(createButton)
+            }
     }
 
     // we need to get the form inputs and so well target their id and get their value
@@ -140,14 +129,12 @@ const addVisual = (function generateButtons() {
         const getForm = document.getElementById("nameForm")
 
         getForm.addEventListener("submit", (event) => {
-            
+
             const getFirstName = document.getElementById("firstPlayer").value
             const getLastName = document.getElementById("secondPlayer").value
 
             return [getFirstName, getLastName]
         })
-        
-
     }
 
     return {
